@@ -4,22 +4,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Search;
 
 namespace SearchInFile
 {
-    public class FileSearch
+    public class FileSearch:ISearch
     {
-       public static string Search(string str)
+        /// <summary>
+        /// Method returns results of search
+        /// </summary>
+        /// <param name="str">What to search</param>
+        /// <param name="param">Path to folder</param>
+        /// <returns></returns>
+        public string Search(string str, string param = null)
         {
-            string fileContent = File.ReadAllText("D:\\Study\\CsharpTasks\\Task8\\SearchInFile\\SearchInFile\\bin\\Debug\\TextFile.txt");
-            if (fileContent.Contains(str))
+            string fileContent = String.Empty;
+            if (String.IsNullOrEmpty(param))
             {
-                return "The "+str+" is founded in file TextFile.txt";
+                fileContent = File.ReadAllText("D:\\Study\\CsharpTasks\\Task8\\SearchInFile\\SearchInFile\\bin\\Debug\\TextFile.txt");
+                if (fileContent.Contains(str))
+                {
+                    return "The " + str + " is founded in file TextFile.txt";
+                }
             }
             else
             {
-                return String.Empty;
+                DirectoryInfo dirInf = new DirectoryInfo(param);
+                FileInfo[] files = dirInf.GetFiles("*.txt");
+                foreach (FileInfo fi in files)
+                {
+                    fileContent = File.ReadAllText(fi.FullName);
+                    if (fileContent.Contains(str))
+                    {
+                        return "The " + str + " is founded in file "+fi.Name;
+                    }
+                }
+
             }
+            
+               return String.Empty;
         }
     }
 }
